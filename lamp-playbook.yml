@@ -1,0 +1,52 @@
+- hosts: lampserver
+  become: true
+  remote_user: ec2-user
+  gather_facts: false
+    - name: Install LAMP stack using Ansible
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - 'httpd'
+        - 'mariadb-server'
+        - 'mariadb'
+        - 'php'
+        - 'php-mysql'
+        - 'php-gd'
+        - 'php-pear'
+    - name: update packages
+      yum:
+        name: '*'
+        state: latest
+      register: yum_result
+      async: 1000
+      poll: 30
+    
+    - name: Create a new PHP info file
+      file: path="/var/www/html/info.php" state=touch
+    
+    - name: Check that new PHP info file exists
+      stat: path="/var/www/html/info.php"
+      register: file_path
+    
+    - name: Add content to PHP info file
+      copy: content="<?php phpinfo(); ?>" dest="/var/www/html/info.php"
+      when: file_path.stat.exists == true
+    
+    - name: enable service httpd and ensure it is not masked
+      systemd:
+        name: httpd
+        enabled: yes
+        masked: no
+    
+    - name: enable service mariadb and ensure it is not masked
+      systemd:
+        name: mariadb
+        enabled: yes
+        masked: no
+        
+    - name: Make sure httpd service is running
+      systemd: state=started name=httpd
+    
+    - name: Make sure mariadb is running
+      systemd: state=started name=mariadb
