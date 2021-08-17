@@ -1,0 +1,2 @@
+[lampserver]
+54.172.93.117 ansible_user=ec2-user
