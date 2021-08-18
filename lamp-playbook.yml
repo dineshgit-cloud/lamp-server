@@ -12,9 +12,11 @@
         - 'mariadb-server'
         - 'mariadb'
         - 'php'
-        - 'php-mysql'
+        - 'php-mysqlnd'
         - 'php-gd'
         - 'php-pear'
+        - 'libapache2-mod-php'
+        
     
     - name: Create a new PHP info file
       file: path="/var/www/html/info.php" state=touch
