@@ -15,7 +15,7 @@
         - 'php-mysqlnd'
         - 'php-gd'
         - 'php-pear'
-        - 'libapache2-mod-php'
+
         
     
     - name: Create a new PHP info file
